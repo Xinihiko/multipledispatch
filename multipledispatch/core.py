@@ -1,5 +1,6 @@
 import inspect
 import sys
+from typing import Callable, Any
 
 from .dispatcher import Dispatcher, MethodDispatcher, ambiguity_warn
 
@@ -57,14 +58,14 @@ def dispatch(*types, **kwargs):
         name = func.__name__
 
         if ismethod(func):
-            dispatcher = inspect.currentframe().f_back.f_locals.get(
+            dispatcher: Dispatcher = inspect.currentframe().f_back.f_locals.get(
                 name,
                 MethodDispatcher(name),
             )
         else:
             if name not in namespace:
                 namespace[name] = Dispatcher(name)
-            dispatcher = namespace[name]
+            dispatcher: Dispatcher = namespace[name]
 
         dispatcher.add(types, func)
         return dispatcher
@@ -72,7 +73,7 @@ def dispatch(*types, **kwargs):
     return _df
 
 
-def ismethod(func):
+def ismethod(func: Callable[Any, Any]):
     """Is func a method?
 
     Note that this has to work as the method is defined but before the class is
