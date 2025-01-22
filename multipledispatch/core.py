@@ -1,13 +1,13 @@
 import inspect
 import sys
-from typing import Callable, Any
+from typing import Callable, Any, Types, Dict
 
 from .dispatcher import Dispatcher, MethodDispatcher, ambiguity_warn
 
-global_namespace = dict()
+global_namespace: Dict[str, Any] = dict()
 
 
-def dispatch(*types, **kwargs):
+def dispatch(*types: Types[object], **kwargs):
     """Dispatch function on the types of the inputs
 
     Supports dispatch on all non-keyword arguments.
@@ -50,11 +50,11 @@ def dispatch(*types, **kwargs):
     ...     def __init__(self, datum):
     ...         self.data = [datum]
     """
-    namespace = kwargs.get("namespace", global_namespace)
+    namespace: Dict[str, Any] = kwargs.get("namespace", global_namespace)
 
     types = tuple(types)
 
-    def _df(func):
+    def _df(func: Callable[Any, Any]):
         name = func.__name__
 
         if ismethod(func):
